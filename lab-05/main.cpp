@@ -52,11 +52,11 @@ bool czy_przestepny(int rok){
     return rok % 4 == 0 && rok % 100 != 0 || rok % 400 == 0;
 }
 void test_czy_przestepny(){
-    assert(czy_przestepny(2024) == true);
-    assert(czy_przestepny(2000) == true);
-    assert(czy_przestepny(1900) == false);
-    assert(czy_przestepny(2023) == false);
-    assert(czy_przestepny(0) == true);
+    assert(czy_przestepny(2024));
+    assert(czy_przestepny(2000));
+    assert(!czy_przestepny(1900));
+    assert(!czy_przestepny(2023));
+    assert(czy_przestepny(0));
 }
 int ile_dni_w_roku(int rok){
     return czy_przestepny(rok) ? 366 : 365;
@@ -100,8 +100,8 @@ int ile_dni_w_miesiacu_switch(int rok, int miesiac){
         case 4: res = 30; break;
         case 5: res = 31; break;
         case 6: res = 30; break;
-        case 7: res = 31;
-        case 8: break;
+        case 7:
+        case 8: res = 31; break;
         case 9: res = 30; break;
         case 10: res = 31; break;
         case 11: res = 30; break;
@@ -179,17 +179,17 @@ bool isPrime(int a, int b){
     return NWD_2(a, b) == 1;
 }
 void test_isPrime(){
-    assert(isPrime(15, 28) == true);
-    assert(isPrime(9, 12) == false);
-    assert(isPrime(17, 31) == true);
+    assert(isPrime(15, 28));
+    assert(!isPrime(9, 12));
+    assert(isPrime(17, 31));
 }
 bool czy_pitagorejska(int a, int b, int c){
     return pow(a, 2) + pow(b, 2) == pow(c,2);
 }
 void test_czy_pitagorejska(){
-    assert(czy_pitagorejska(3, 4, 5) == true);
-    assert(czy_pitagorejska(1, 2, 3) == false);
-    assert(czy_pitagorejska(5, 12, 13) == true);
+    assert(czy_pitagorejska(3, 4, 5));
+    assert(!czy_pitagorejska(1, 2, 3));
+    assert(czy_pitagorejska(5, 12, 13));
 }
 int liczbaCyfr(int n){
     int c = 0;
