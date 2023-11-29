@@ -1,0 +1,3 @@
+/home/c/277797/pp-git/lab-pp/lab-06/cmake-build-debug/CMakeFiles/lab_06.dir
+/home/c/277797/pp-git/lab-pp/lab-06/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/c/277797/pp-git/lab-pp/lab-06/cmake-build-debug/CMakeFiles/rebuild_cache.dir
