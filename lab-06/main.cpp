@@ -135,25 +135,17 @@ bool containsVal(const std::vector<int> &vec, int val){
 }
 
 int indexAt(const std::vector<int> &vec, int val){
-    int c = 0;
     for(int i = 0; i < vec.size(); ++i)
-        if(vec[i] == val){
-            c+=i+1;
-            break;
-        } else
-            c = -1;
-    return c;
+        if(vec[i] == val)
+            return i+1;
+    return -1;
 }
 
 int lastIndexAt(const std::vector<int> &vec, int val){
-    int c = 0;
     for (int i = static_cast<int>(vec.size()); i>=0; --i)
-        if(vec[i] == val){
-            c+=i+1;
-            break;
-        } else
-            c = -1;
-    return c;
+        if(vec[i] == val)
+           return i+1;
+    return -1;
 }
 
 void oneR(std::vector<int> &vec){
