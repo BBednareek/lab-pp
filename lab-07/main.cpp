@@ -97,21 +97,6 @@ double maxCircleCircumference(const std::vector<Circle>& circles){
 }
 
 
-IntersectRes intersect(Rectangle rect1, Rectangle rect2){
-    IntersectRes res{};
-
-    res.resRect.bottom_left.x_pos = std::max(rect1.bottom_left.x_pos, rect2.bottom_left.x_pos);
-    res.resRect.bottom_left.x_pos = std::max(rect1.bottom_left.y_pos, rect2.bottom_left.y_pos);
-    res.resRect.bottom_left.x_pos = std::min(rect1.top_right.x_pos, rect2.top_right.x_pos);
-    res.resRect.bottom_left.x_pos = std::min(rect1.top_right.x_pos, rect2.top_right.x_pos);
-
-    if (res.resRect.bottom_left.x_pos >= res.resRect.top_right.x_pos || res.resRect.bottom_left.y_pos >= res.resRect.top_right.y_pos)
-       res.hasIntersect = false;
-    else
-        res.hasIntersect = true;
-
-    return res;
-}
 
 Student read_student_data(){
     Student student;
@@ -141,16 +126,23 @@ void display_student(const Student& student) {
 std::vector<Student> fill_students() {
     std::vector<Student> students;
 
-    students.push_back({ "Jan", "Kowalski", 'M', "12345678901", "S12345" });
-    students.push_back({ "Anna", "Nowak", 'K', "98765432109", "S67890" });
-    students.push_back({ "Piotr", "Nowicki", 'M', "45678901234", "S24680" });
-
+    try {
+        students.push_back({"Jan", "Kowalski", 'M', "12345678901", "S12345"});
+        students.push_back({"Anna", "Nowak", 'K', "98765432109", "S67890"});
+        students.push_back({"Piotr", "Nowicki", 'M', "45678901234", "S24680"});
+    } catch (const std::exception& e) {
+        std::cerr << "Error while filling list with students data: " << e.what() << std::endl;
+    }
     return students;
 }
 
 void display_all_students(const std::vector<Student>& students){
-    for (const Student& student: students)
-        display_student(student);
+    try{
+        for (const Student& student: students)
+            display_student(student);
+    } catch (const std::exception& e) {
+        std::cerr << "Error while displaying list of students: " << e.what() << std::endl;
+    }
 }
 
 int find_student(const std::vector<Student>& students, const std::string& searchedIdx){
@@ -160,19 +152,22 @@ int find_student(const std::vector<Student>& students, const std::string& search
     return -1;
 }
 
-bool add_student(std::vector<Student>& students, const Student& newStudent){
+void add_student(std::vector<Student>& students, const Student& newStudent){
     try {
         students.push_back(newStudent);
-        return true;
     } catch (const std::exception& e){
         std::cerr << "Error while adding new student: " << e.what() << std::endl;
-        return false;
     }
 }
 
 void remove_student(std::vector<Student>& students, const std::string& idxRem) {
-    students.erase(std::remove_if(students.begin(), students.end(),
-                                  [&](const Student& student) { return student.idx_nr == idxRem; }), students.end());
+    try {
+        students.erase(std::remove_if(students.begin(), students.end(),
+                                      [&](const Student &student) { return student.idx_nr == idxRem; }),
+                       students.end());
+    } catch (const std::exception& e){
+        std::cerr << "Error while erasing student data: " << e.what() << std::endl;
+    }
 }
 
 void load_students(std::vector<Student>& students, const std::string& filename) {
@@ -184,25 +179,60 @@ void load_students(std::vector<Student>& students, const std::string& filename) 
 
     students.clear(); // Czyszczenie istniejących danych
     std::string line;
-    while (std::getline(file, line)) {
-        Student student;
-        std::istringstream iss(line);
-        iss >> student.name >> student.surname >> student.sex >> student.pesel >> student.idx_nr;
-        students.push_back(student);
+    try{
+        while (std::getline(file, line)) {
+            Student student;
+            std::istringstream iss(line);
+            iss >> student.name >> student.surname >> student.sex >> student.pesel >> student.idx_nr;
+            students.push_back(student);
+        }
+        file.close();
+    } catch(const std::exception& e) {
+        std::cerr << "Error while loading students: " << e.what() << std::endl;
     }
+}
 
-    file.close();
+IntersectRes intersect(Rectangle rect1, Rectangle rect2){
+    IntersectRes res{};
+
+    res.resRect.bottom_left.x_pos = std::max(rect1.bottom_left.x_pos, rect2.bottom_left.x_pos);
+    res.resRect.bottom_left.y_pos = std::max(rect1.bottom_left.y_pos, rect2.bottom_left.y_pos);
+    res.resRect.top_right.x_pos = std::min(rect1.top_right.x_pos, rect2.top_right.x_pos);
+    res.resRect.top_right.y_pos = std::min(rect1.top_right.y_pos, rect2.top_right.y_pos);
+
+    if (res.resRect.bottom_left.x_pos >= res.resRect.top_right.x_pos || res.resRect.bottom_left.y_pos >= res.resRect.top_right.y_pos)
+        res.hasIntersect = false;
+    else
+        res.hasIntersect = true;
+
+    return res;
 }
 
 int main() {
-    Student s;
-    s = read_student_data();
-    display_student(s);
+    // No interesct
+//    Rectangle rect1{3,3,5,5};
+//    Rectangle rect2{ 7,4,9,6 };
 
-    std::vector<Student> students = fill_students();
+    //Partial
+//    Rectangle rect1{1,1,3,3};
+//    Rectangle rect2{ 2,0,4,2 };
 
-    for(const Student& student : students)
-        display_student(student);
+    //Full
+//    Rectangle rect1{2,1,5,4};
+//    Rectangle rect2{3,2,4,3};
+//
+//    IntersectRes result = intersect(rect1, rect2);
+//
+//    if (result.hasIntersect) {
+//        std::cout << "Intersection Rectangle: "
+//                  << "Bottom Left: (" << result.resRect.bottom_left.x_pos << ", " << result.resRect.bottom_left.y_pos << "), "
+//                  << "Top Right: (" << result.resRect.top_right.x_pos << ", " << result.resRect.top_right.y_pos << ")\n";
+//    } else {
+//        std::cout << "No intersection" << std::endl;
+//    }
+
+    std::vector<Student> vec;
+    load_students(vec, "list_of_students");
 
     std::cout << std::endl;
     return 0;
