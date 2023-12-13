@@ -39,7 +39,6 @@ struct Student {
     std::string idx_nr;
 };
 
-
 double distance(Point point1, Point point2){
     return sqrt(pow((point2.x_pos - point1.x_pos),2) + pow((point2.y_pos - point1.y_pos), 2));
 }
@@ -96,8 +95,6 @@ double maxCircleCircumference(const std::vector<Circle>& circles){
     return maxCircumference;
 }
 
-
-
 Student read_student_data(){
     Student student;
 
@@ -127,9 +124,9 @@ std::vector<Student> fill_students() {
     std::vector<Student> students;
 
     try {
-        students.push_back({"Jan", "Kowalski", 'M', "12345678901", "S12345"});
-        students.push_back({"Anna", "Nowak", 'K', "98765432109", "S67890"});
-        students.push_back({"Piotr", "Nowicki", 'M', "45678901234", "S24680"});
+        students.push_back({"Przemysław", "Bednarek", 'M', "12345678901", "277797"});
+        students.push_back({"Janina", "Krysik", 'K', "98765432109", "277798"});
+        students.push_back({"Paweł", "Turek", 'M', "45678901234", "277799"});
     } catch (const std::exception& e) {
         std::cerr << "Error while filling list with students data: " << e.what() << std::endl;
     }
@@ -138,8 +135,10 @@ std::vector<Student> fill_students() {
 
 void display_all_students(const std::vector<Student>& students){
     try{
-        for (const Student& student: students)
+        for (const Student& student: students) {
             display_student(student);
+            std::cout << std::endl;
+        }
     } catch (const std::exception& e) {
         std::cerr << "Error while displaying list of students: " << e.what() << std::endl;
     }
@@ -172,8 +171,8 @@ void remove_student(std::vector<Student>& students, const std::string& idxRem) {
 
 void load_students(std::vector<Student>& students, const std::string& filename) {
     std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Error with opening file: " << filename << std::endl;
+    if (!file) {
+        std::cerr << "Error with opening file while loading data: " << filename << std::endl;
         return;
     }
 
@@ -186,9 +185,36 @@ void load_students(std::vector<Student>& students, const std::string& filename) 
             iss >> student.name >> student.surname >> student.sex >> student.pesel >> student.idx_nr;
             students.push_back(student);
         }
+        std::cout << "File data loaded successful" << std::endl;
         file.close();
     } catch(const std::exception& e) {
         std::cerr << "Error while loading students: " << e.what() << std::endl;
+    }
+}
+
+void save_students(const std::vector<Student>& students, const std::string& filename){
+    std::fstream file(filename, std::fstream::app);
+
+    std::vector<std::string> res;
+    res.reserve(students.size());
+
+    Student s;
+
+    if(!file) {
+        std::cerr << "Error with opening file to push data: " << filename << std::endl;
+        return;
+    }
+    try{
+       for(const auto & student : students){
+           s.name = student.name;
+           s.surname = student.surname;
+           s.sex = student.sex;
+           s.pesel = student.pesel;
+           s.idx_nr = student.idx_nr;
+           file << s.name << " " << s.surname << " " << s.sex << " " << s.pesel << " " << s.idx_nr << "\n";
+       }
+    } catch (const std::exception& e){
+        std::cerr << "Error while pushing data: " << e.what() << std::endl;
     }
 }
 
@@ -232,7 +258,11 @@ int main() {
 //    }
 
     std::vector<Student> vec;
-    load_students(vec, "list_of_students");
+
+    vec = fill_students();
+    save_students(vec, "../list_of_students.txt");
+    load_students(vec, "../list_of_students.txt");
+    display_all_students(vec);
 
     std::cout << std::endl;
     return 0;
